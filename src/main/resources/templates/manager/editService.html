@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Администрирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Добавление услуги</h1>
+    <p class="fs-6 text-danger" th:text="${serviceNameError}"></p>
+    <form method="post" class="row g-3">
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Название услуги</label>
+            <input type="text" class="form-control" name="inputService" id="inputService" placeholder="Название услуги" th:value="${service.serviceName}" required>
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label">Структурное подразделение</label>
+            <input type="text" class="form-control" disabled th:placeholder="${department.name}">
+        </div>
+        <div class="col-sm-4">
+        <label for="inputDuration" class="form-label">Длительность оказания услуги</label>
+        <select class="form-select" name="inputDuration" id="inputDuration" required>
+            <option selected disabled value="">Выберите длительность оказания услуги</option>
+            <option value="5">5 минут</option>
+            <option value="10">10 минут</option>
+            <option value="15">15 минут</option>
+        </select>
+        </div>
+        <div class="col-sm-12">
+            <label for="inputShortDescription" class="form-label">Краткое описание услуги</label>
+            <textarea class="form-control" name="inputShortDescription" id="inputShortDescription" maxlength="300" wrap="soft" rows="4" th:text="${service.shortDescription}" required></textarea>
+        </div>
+        <div class="col-sm-12">
+            <label for="inputDescription" class="form-label">Информация об услуги</label>
+            <textarea class="form-control" name="inputDescription" id="inputDescription" maxlength="10000" wrap="soft" rows="10" th:text="${service.description}" required></textarea>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+<!--            <a th:href="'/manager/all-services'" class="btn btn-secondary my-2">Назад</a>-->
+            <a href="javascript:history.go(-1)" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Панель администратора</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+    <script type="text/javascript" src="/codebase/calendar.js?v=7.1.4"></script>
+    <link rel="stylesheet" href="/codebase/calendar.css?v=7.1.4">
+    <link rel="stylesheet" href="/common/index.css?v=7.1.4">
+    <link rel="stylesheet" href="/common/calendar.css?v=7.1.4">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <h1>Статистика</h1>
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <br>
+            <h3>Выберите период</h3>
+        </div>
+        <div class="col-sm-3">
+            <div class="dhx_calendar-result">
+<!--                Невидимые поля для хранения даты -->
+                <input type="text" class="form-control" name="resultFromInput" id="resultFromInput" hidden>
+                <input type="text" class="form-control" name="resultToInput" id="resultToInput" hidden>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <section class="dhx_sample-container" style="-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;">
+                <div class="dhx_sample-container__widget" id="calendar1"
+                     style="margin-right: 0px; -webkit-box-pack: end; -webkit-justify-content: flex-end; -ms-flex-pack: end; justify-content: flex-end">
+                </div>
+                <div class="dhx_sample-container__widget" id="calendar2"
+                     style="margin-right: 0px; -webkit-box-pack: start; -webkit-justify-content: flex-start; -ms-flex-pack: start; justify-content: flex-start">
+                </div>
+            </section>
+        </div>
+        <div class="col-sm-12 text-center">
+            <br>
+            <a class="btn btn-primary" onclick="worker()">Сформировать</a>
+        </div>
+    </div>
+    <br>
+    <div class="p-4 p-md-5 mb-4 text-black rounded alert-info" id="statisticBlock" hidden>
+        <div class="col-md-12 px-0">
+            <h2 id="h1">Оказано услуг за период</h2>
+            <div class="row text-center">
+                <div class="col-sm-2" th:each="service : ${allServices}">
+                    <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                        <div class="card-header py-3">
+                            <h6 class="my-0 fw-normal" th:text="${service.serviceName}"></h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <a th:id="'IDservice' + ${service.id}">0</a>
+                                <br>
+                                <a th:id="'Average' + ${service.id}"></a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="p-4 p-md-5 mb-4 text-black rounded alert-info" id="statisticBlock2" hidden>
+        <div class="col-md-12 px-0">
+            <h2 id="h2">Подано заявок за период</h2>
+            <div class="row text-center">
+                <div class="col-sm-2" th:each="service : ${allServices}">
+                    <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                        <div class="card-header py-3">
+                            <h6 class="my-0 fw-normal" th:text="${service.serviceName}"></h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <a th:id="'IDservice2' + ${service.id}">0</a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    document.getElementById("resultFromInput").value = /*[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}]]*/;
+    document.getElementById("resultToInput").value = /*[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}]]*/;
+
+    var calendar1 = new dhx.Calendar("calendar1", {
+    css: "dhx_widget--bordered", dateFormat:"%Y-%m-%d",
+    value: (/*[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}]]*/),
+    disabledDates: function (date) { let max = new Date(); return (date>max)}
+    });
+
+    var calendar2 = new dhx.Calendar("calendar2", {
+    css: "dhx_widget--bordered", dateFormat:"%Y-%m-%d",
+    value: (/*[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}]]*/),
+    disabledDates: function (date) { let max = new Date(); return (date>max)}
+    });
+
+    calendar1.link(calendar2);
+    calendar1.events.on("change", function (date) {
+    document.querySelector("#resultFromInput").value = calendar1.getValue();
+    });
+
+    calendar2.events.on("change", function (date) {
+    document.querySelector("#resultToInput").value = calendar2.getValue();
+    });
+
+    function worker(){
+        //Обнуляем значения счетчиков для статистики
+         /*[# th:each="appeal : ${currentAppeals}"]*/
+            var index = /*[[${appeal.service.id}]]*/;
+            document.getElementById('IDservice' + index).innerText = 0;
+            document.getElementById('IDservice2' + index).innerText = 0;
+        /*[/]*/
+        /*]]>*/
+
+        var timeFrom = new Date(document.getElementById('resultFromInput').value + " 00:00").getTime()/1000;
+        var timeTo = new Date(document.getElementById('resultToInput').value + " 00:00").getTime()/1000;
+        document.getElementById('statisticBlock').hidden = false;
+        document.getElementById('statisticBlock2').hidden = false;
+        document.getElementById('h1').innerText = 'Оказано услуг за период c ' + document.getElementById('resultFromInput').value
+            + ' по ' + document.getElementById('resultToInput').value;
+        document.getElementById('h2').innerText = 'Подано заявок за период c ' + document.getElementById('resultFromInput').value
+            + ' по ' + document.getElementById('resultToInput').value;
+
+        var service = []; //В массиве будет хранить кол-во заявок по определенной услуги. Индекс элемента = индексу услуги
+        var service_2 = []; //Такой же массив что и выше, но уже для вывода кол-во ПОДАННЫХ заявок за период
+        var size = 1 + /*[[${allServices.get(allServices.size()-1).getId()}]]*/ ;
+        for (var i = 0; i < size; i++) {
+            service.push(0);
+            service_2.push(0);
+        }
+        var summ_1 = 0;
+
+        /*[# th:each="appeal : ${currentAppeals}"]*/
+            var index = /*[[${appeal.service.id}]]*/;
+            //Время у заявки берем из поля, НО! часы, минуты и секунды устанавливаем на 0
+            //чтобы при выборе диапазано например по 25 марта, заявка созданная 25 марта в 18-00 часов, прошла сравнение и попала в статистику
+            var appeal_date = new Date(/*[[${appeal.dateAnswer}]]*/).setHours(0,0,0,0);
+            appeal_date = new Date(appeal_date).getTime()/1000;
+
+            //Блока для оказанных услуг знп
+            if((timeFrom <= appeal_date) & (appeal_date <=  timeTo)){
+                service[index] = service[index]+1;
+                document.getElementById('IDservice' + index).innerText = 'Кол-во - ' + service[index];
+
+                summ_1 = /*[[${appeal.evaluationAverage}]]*/ + summ_1;
+                var avSumm = summ_1/service[index];
+                document.getElementById('Average' + index).innerText = 'Средняя оценка - ' + avSumm.toFixed(2);
+            }
+
+            //Блок для оказанных онлайн услуг
+            if(/*[[${appeal.textResponse}]]*/ != null){
+                service[index] = service[index]+1;
+                document.getElementById('IDservice' + index).innerText = 'Кол-во - ' + service[index];
+                summ_1 = /*[[${appeal.evaluationAverage}]]*/ + summ_1;
+                var avSumm = summ_1/service[index];
+                document.getElementById('Average' + index).innerText = 'Средняя оценка - ' + avSumm.toFixed(2);
+            }
+
+            var appeal_date_2 = new Date(/*[[${appeal.dateAppeal}]]*/).setHours(0,0,0,0);
+            appeal_date_2 = new Date(appeal_date_2).getTime()/1000;
+
+            //Блок для всех Подданых заявок за выбранный период
+            if((timeFrom <= appeal_date_2) & (appeal_date_2 <=  timeTo)){
+                service_2[index] = service_2[index]+1;
+                document.getElementById('IDservice2' + index).innerText = 'Кол-во - ' + service_2[index];
+            }
+        /*[/]*/
+        /*]]>*/
+
+    }
+</script>
+</body>
+</html>

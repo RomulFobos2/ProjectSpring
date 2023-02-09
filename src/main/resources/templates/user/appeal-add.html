@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Подача заявки</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Подача заявления</h1>
+    <form action="/appeal-add" method="post" class="row g-3" onsubmit="return getRequest()">
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Выбранное структурное подразделение</label>
+            <select class="form-select" name="inputDepartment" id="inputDepartment" required oninput="testFunction()">
+                <option selected disabled value="">Выберите структурное подразделение</option>
+                <option th:each="el : ${allDepartments}" th:value="${el.id}" th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Выбранная услуга</label>
+            <select class="form-select" name="inputService" id="inputService" required disabled
+                    oninput="getFormsDocument()">
+                <option selected disabled value="">Выберите услугу</option>
+                <option></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="StrDateAnswer" class="form-label">Дата приёма</label>
+            <input type="date" name="StrDateAnswer" id="StrDateAnswer" class="form-control" onchange="dateWorker()"
+                   th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required disabled>
+        </div>
+        <div class="col-sm-6">
+            <label for="znpTimePicker" class="form-label" id="labelZnpTimePicker"></label>
+            <div class="bd-example" id="znpTimePicker">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="inputTime" id="inputTime" hidden="true">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <!--            <input type="button" class="btn btn-primary" value="Добавить" onclick="getRequest()">-->
+            <a th:href="'/service-main'" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+    <div class="row g-3">
+        <div class="col-sm-6 alert alert-primary" role="alert">
+            <a id="infoAboutDepartment">
+                <h5 class="alert-heading">"Наименование выбранного структурного подразделения"</h5>
+                <p>Описание структурного подразделения</p>
+                <hr>
+            </a>
+            <a id="infoAboutService">
+                <h5 class="alert-heading">"Наименование выбранной услуги"</h5>
+                <p>Описание выбранной услуги</p>
+                <hr>
+            </a>
+        </div>
+        <div class="col-sm-6 alert alert-success" role="alert" id="listOfDocuments">
+            <h5 class="alert-heading">Перечень документов необходимых для оказания услуги</h5>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+            var count_buttonOfTime; //Кол-во кнопок с временем приема
+            var trigger_inputDep = false; //Тригер того, что inputDepartment один раз уже поменялся
+
+            //Есть некая проблема с let или var         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+             function testFunction() {
+                //Если депертамент уже был выбран один раз, тогда, если пользователь сменит выбор, нужно вызывать метод перерисовки времени
+             	if(trigger_inputDep){
+             	    var chek_NullDate = document.getElementById('StrDateAnswer').value.replace(/-/g, '');
+             	    if(chek_NullDate != 0){
+             	    dateWorker();
+             	    }
+             	}
+             	document.getElementById("inputService").removeAttribute("disabled");
+             	document.getElementById("StrDateAnswer").removeAttribute("disabled");
+             	/*<![CDATA[*/
+             	var departments = [];
+             	var departmentsINFO = []; // в массиве будем хранить shortDescription.
+             	var size = 1 + /*[[${allDepartments.get(allDepartments.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             		departments.push("0");
+             		departmentsINFO.push("0");
+             	}
+             	/*[# th:each="elVar : ${allDepartments}"]*/
+             	var index = /*[[${elVar.id}]]*/ ;
+             	departments[index] = /*[[${elVar.name}]]*/
+             	departmentsINFO[index] = /*[[${elVar.shortDescription}]]*/
+             		/*[/]*/
+             		/*]]>*/
+             	var x = document.getElementById("inputDepartment").value;
+             	var service = [];
+             	/*[# th:each="elServ : ${allServices}"]*/
+             	var index_S = /*[[${elServ.department.id}]]*/
+             		if (x == index_S) {
+             			var var_arr = [];
+             			var_arr.push( /*[[${elServ.serviceName}]]*/ , /*[[${elServ.id}]]*/ );
+             			service.push(var_arr);
+             		}
+             	/*[/]*/
+             	inputService.options.length = 1;
+             	for (var i = 0; i < service.length; i++) {
+             		let newOption = new Option(service[i][0], service[i][1], );
+             		inputService.append(newOption);
+             	}
+             	trigger_inputDep = true;
+
+                var indexDept = document.getElementById("inputDepartment").options.selectedIndex;
+                var infoAboutDepartment = document.getElementById('infoAboutDepartment');
+                infoAboutDepartment.innerHTML = `<h5 class="alert-heading">` + inputDepartment.options[indexDept].text + `</h5><p>` + departmentsINFO[indexDept] + `</p><hr>`
+
+                //Проверка того, что у inputService выбрана услуга. В зависимости от этого вызываем перерисовку необходимых документов
+                check = document.getElementById("inputService").value;
+             	if(check != 0){
+             	    getFormsDocument();
+             	}
+             }
+
+             //Получаю код дня. 0 - рабочий, 1 - не рабочий, 2 - предпраздничный
+             function dayOff(){
+                var date = document.getElementById('StrDateAnswer').value.replace(/-/g, '');
+                var xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                var responseDayOff;
+                xhr.open("GET", `http://isdayoff.ru/${date}?pre=1`, false);
+                xhr.send();
+                return xhr.responseText;
+             }
+
+             function dateWorker() {
+                    //Вытаскиваю id выбранного департамента в select
+                    let idDepartment = document.getElementById("inputDepartment").value;
+                    responseDayOff = dayOff();
+                    if(responseDayOff == 1){
+                        //Удаляем кнопки если выбрана не рабочая дата
+                        alert("Выбран не рабочий день. Пожалуйста, выберите другую дату.");
+                        document.getElementById("labelZnpTimePicker").innerHTML = '';
+	                    document.getElementById('znpTimePicker').innerHTML = '';
+                    }
+                    else{
+                        //Из модели arrayListAppeals переносим все значения в массив allDateOfAppeals
+                        /*<![CDATA[*/
+             	        var allDateOfAppeals = [];
+             	        /*[# th:each="elVar : ${arrayListAppeals}"]*/
+             	        //Если id выбранного департамента в select совпадает с id заявки, то добавляем время этой заявки в массив,
+             	        //чтобы потом НЕ выводить это время
+             	        var var_choiceDep = /*[[${elVar.service.department.id}]]*/;
+             	        if(var_choiceDep == idDepartment){
+             	            allDateOfAppeals.push(/*[[${elVar.dateAnswer}]]*/);
+             	        }
+             		    /*[/]*/
+             		    /*]]>*/
+                        for (var i = 0; i < allDateOfAppeals.length; i++) {
+                            allDateOfAppeals[i] = allDateOfAppeals[i].replace(/T/g, ' ').slice(0, 16);
+             	        }
+                        //Создаем маасив с датами записи конкретного пользователя
+             	        var allDateOfUSERAppeals = /*[[${userDateOfAppeals}]]*/;
+             	        for (var i = 0; i < allDateOfUSERAppeals.length; i++) {
+                            allDateOfUSERAppeals[i] = allDateOfUSERAppeals[i].replace(/T/g, ' ').slice(0, 16);
+             	        }
+
+             	        let allTimes = ["09:00", "09:20", "09:40", "10:00", "10:20", "10:40", "11:00", "11:20", "11:40", "12:00", "12:20", "12:40",
+                        "13:00", "13:20", "13:40", "14:00", "14:20", "14:40", "15:00", "15:20", "15:40", "16:00", "16:20", "16:40"];
+             	        if(responseDayOff == 0){
+             	            allTimes.push("17:00");
+             	            allTimes.push("17:20");
+             	            allTimes.push("17:40");
+             	        }
+
+                        let result_time = [];
+                        //В массиве allTimes формируем строку date и ищем такую же строку в массиве allDateOfAppeals
+                        //Если есть совпадение, значит запись на такую дату и время существует
+                        for (var i = 0; i < allTimes.length; i++) {
+                            var check_date = false;
+                            var date = document.getElementById('StrDateAnswer').value + " " + allTimes[i];
+                            var maxCountZNP = 2; //Кол-во допустимых записей на одно время. Иммитация записи к нескольким специалистам.
+                            for (var j = 0; j < allDateOfAppeals.length; j++) {
+                                if(allDateOfAppeals[j] == date){
+                                    if(maxCountZNP <= 1){
+                                        check_date = true;
+                                    }
+                                    else{
+                                       maxCountZNP--;
+                                    }
+                                }
+                            }
+                            //Еще одно сравнение, но уже с массивом записей конкретного пользователя.
+                            //Из массива его записей ищем время и убираем его из вариантов выбора,
+                            //чтобы пользователь не записалсыя на одно время на разные услуги
+                            for(var j = 0; j < allDateOfUSERAppeals.length; j++){
+                                if(allDateOfUSERAppeals[j] == date){
+                                    check_date = true;
+                                }
+                            }
+
+                            //Еще одно сравнение, но уже с текущей датой
+                            //чтобы пользователь не мог записаться например в пятницу в 12-00 на 09-00.
+                            //09-00 не выводим т.к. дата уже прошла.
+                            var currentDate = Date.now()/1000;
+                            var checkDate = new Date(date);
+                            hours = allTimes[i].split(":")[0];
+                            minutes = allTimes[i].split(":")[1];
+                            checkDate.setHours(hours, minutes, 0, 0)
+                            if(currentDate > (checkDate.getTime()/1000)){
+                                check_date = true;
+                            }
+
+                            //Если прошла все проверки, то помещаем ее в массив для отображения на сайте
+                            if(!check_date){
+                                result_time.push(allTimes[i]);
+                            }
+             	        }
+             	        count_buttonOfTime = result_time.length;
+             	        //Вызываем функция для вывода кнопок со свободными датами.
+             	        //В функцию передаем весь сформированный массив result_time со свободными датами
+             	        rebuildTable(result_time);
+                    }
+             }
+
+             function rebuildTable(result_time) {
+                document.getElementById("labelZnpTimePicker").innerHTML = 'Выберите время';
+	            var znpTimePicker = document.getElementById('znpTimePicker');
+	            znpTimePicker.innerHTML = ''
+	            for (var i = 0; i < result_time.length; i++) {
+		            var button = `<input type="button" id="`+i+`" class="btn btn-default text-center mx-auto" onclick="onclickButton(this)" value="`+result_time[i]+`" required>`
+		        znpTimePicker.innerHTML += button
+	            }
+            }
+
+            //Клик по кнопке с временем.
+	        function onclickButton(element){
+	            for (var i = 0; i < count_buttonOfTime; i++) {
+		            if(i != element.id){
+		                document.getElementById(i).className = "btn btn-default text-center mx-auto";
+		            }
+	            }
+	            element.className="btn-primary btn btn-default text-center mx-auto";
+	            //Добавляем в невидимый input выбранное пользователем время
+	            document.getElementById("inputTime").value = element.value;
+	        }
+
+            //Отправка запроса
+	        function getRequest(){
+	            var boolean = false;
+	            for (var i = 0; i < count_buttonOfTime; i++) {
+	                var var_button = document.getElementById(i);
+	                if(var_button.classList.contains("btn-primary")){
+	                    boolean = true;
+	                    break;
+	                }
+	            }
+	            if(!boolean){
+	                alert("Вы не выбрали время приема. Выберите свободное время.");
+	                return false;
+	            }
+	            else{
+<!--	                alert(document.getElementById("inputTime").value);-->
+	                return true;
+	            }
+	        }
+
+            //Получаем список документов для услуги и выводим их
+	        function getFormsDocument(){
+	            //Формируем массив с описанием услуг
+                /*<![CDATA[*/
+             	var serviceINFO = []; // в массиве будем хранить shortDescription.
+             	var size = 1 + /*[[${allServices.get(allServices.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             		serviceINFO.push("0");
+             	}
+             	/*[# th:each="elVar : ${allServices}"]*/
+             	var index = /*[[${elVar.id}]]*/ ;
+             	serviceINFO[index] = /*[[${elVar.shortDescription}]]*/
+             		/*[/]*/
+             		/*]]>*/
+
+
+
+	            //получаем id выбранной в select услуги
+	            var x = document.getElementById("inputService").value;
+
+	            var formDocuments = [];
+             	var size = 1 + /*[[${formDocuments.get(formDocuments.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             	    var var_array = ["0", "0", "0"]
+             		formDocuments.push(var_array);
+             	}
+             	var i = 0;
+             	/*[# th:each="elVar : ${formDocuments}"]*/
+             	    formDocuments[i][0] = /*[[${elVar.name}]]*/;
+             	    formDocuments[i][1] = /*[[${elVar.document.name}]]*/;
+             	    formDocuments[i][2] = /*[[${elVar.service.id}]]*/;
+
+             	    i++;
+                /*[/]*/
+
+                var listOfDocuments = document.getElementById('listOfDocuments');
+	            listOfDocuments.innerHTML = `<h5 class="alert-heading">Перечень документов необходимых для оказания услуги</h5>`;
+                for (var i = 0; i < formDocuments.length; i++) {
+                    if(formDocuments[i][2] == x){
+                        var var_html = `<p>` + formDocuments[i][1] + `(` + formDocuments[i][0] + `)</p> <hr>`;
+                        listOfDocuments.innerHTML += var_html;
+                    }
+                }
+                var indexService = document.getElementById("inputService").options.selectedIndex;
+                var infoAboutService = document.getElementById('infoAboutService');
+                infoAboutService.innerHTML = `<h5 class="alert-heading">` + inputService.options[indexService].text + `</h5><p>`+ serviceINFO[x] +`</p><hr>`
+	        }
+</script>
+</body>
+</html>
+
+

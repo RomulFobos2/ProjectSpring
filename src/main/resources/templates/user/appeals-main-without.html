@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <title>Заявки без отзывов</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container mt-5">
+    <h1>Заявки без отзывов</h1>
+    <div th:each="el : ${currentAppeal}" class="alert alert-info mt-2">
+        <h3 th:text="${el.service.serviceName} + ' / ' + ${el.service.department.name}"/>
+        <p th:if="${el.password != null}"><span>Онлайн услуга</span></p>
+        <p th:if="${el.dateAnswer != null}">Время ответа <span th:text="${#dates.format(el.dateAnswer, 'dd MMMM yyyy HH:mm')}"></span></p>
+        <a th:href="'/appeal-details/' + ${el.id}"  class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="pagination justify-content-start">
+        <div class="d-flex justify-content-start flex-wrap">
+            <a th:href="'/appeals'" class="btn btn-secondary mx-auto">Назад</a>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Администрирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<!--Страница для вывода всех пользователей-->
+<div class="container mt-5">
+    <h1>Администрирование</h1>
+    <div class="alert alert-info mt-2">
+        <h3>Менеджеры</h3>
+        <a th:href="'/admin/all-managers'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Пользователи</h3>
+        <a th:href="'/admin/all-users'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Заявки</h3>
+        <a th:href="'/admin/appeals-main'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Структурные подразделения</h3>
+        <a th:href="'/admin/all-departments'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Услуги</h3>
+        <a th:href="'/admin/all-services'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Документы</h3>
+        <a th:href="'/admin/all-documents'" class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="alert alert-info mt-2">
+        <h3>Формы документов</h3>
+        <a th:href="'/admin/all-formDocuments'" class="btn btn-warning">Детальнее</a>
+    </div>
+</div>
+
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

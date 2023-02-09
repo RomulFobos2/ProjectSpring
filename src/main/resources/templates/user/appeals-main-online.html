@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <title>Мои заявки</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container mt-5">
+    <h1>Мои заявки (онлайн услуги)</h1>
+    <div th:each="el : ${currentAppeal}" class="alert alert-info mt-2">
+        <h3 th:text="${el.service.serviceName} + ' / ' + ${el.service.department.name}"/>
+        <p><span>Онлайн услуга</span></p>
+        <a th:href="'/appeal-details/' + ${el.id}"  class="btn btn-warning">Детальнее</a>
+    </div>
+    <div class="pagination justify-content-start">
+        <div class="d-flex justify-content-start flex-wrap">
+            <a th:href="'/appeals'" class="btn btn-secondary mx-auto">Назад</a>
+            <a th:href="'/service-main'" class="btn btn-success mx-1">Получить услугу</a>
+            <a th:href="'/appeals-old-online'" class="btn btn-secondary mx-1">Обработанные заявки</заявок></a>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

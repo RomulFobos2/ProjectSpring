@@ -1,0 +1,32 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="header">
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+
+        <h5 sec:authorize="isAuthenticated()" class="my-0 mr-md-auto font-weight-normal" onclick="window.location.href = '/profile'" role="button"><a sec:authentication="name"/></h5>
+        <h5 sec:authorize="!isAuthenticated()" class="my-0 mr-md-auto font-weight-normal">Гость</h5>
+
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a sec:authorize="!hasRole('ROLE_MANAGER')" class="p-2 text-dark" href="/">Главная</a>
+            <a sec:authorize="!hasRole('ROLE_MANAGER')" class="p-2 text-dark" href="/about">О нас</a>
+<!--            <a class="p-2 text-dark" href="/test">Тестовая страница</a>-->
+            <a sec:authorize="!isAuthenticated()" class="p-2 text-dark" href="/login">Вход</a>
+            <a sec:authorize="hasRole('ROLE_USER')" class="p-2 text-dark" href="/appeals">Мои заявки</a>
+            <a sec:authorize="hasRole('ROLE_USER')" class="p-2 text-dark" href="/service-main">Получить услугу</a>
+            <a sec:authorize="hasRole('ROLE_USER')" class="p-2 text-dark" href="/all-departments">Структурные подразделения</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')"  class="p-2 text-dark" href="/admin">Администрирование</a>
+
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager">Главная</a>
+<!--            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/all-users">Пользователи</a>-->
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/appeals-main">Заявки</a>
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/department">Структурное подразделение</a>
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/all-services">Услуги</a>
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/all-documents">Документы</a>
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/all-formDocuments">Формы докментов</a>
+            <a sec:authorize="hasRole('ROLE_MANAGER')"  class="p-2 text-dark" href="/manager/statistic">Статистика</a>
+        </nav>
+        <a sec:authorize="!isAuthenticated()" class="btn btn-outline-primary" href="/registration">Зарегистрироваться</a>
+        <form th:action="@{/logout}" method="post">
+            <input sec:authorize="isAuthenticated()" type="submit" class="btn btn-outline-primary" value="Выход"/>
+        </form>
+    </div>
+</div>

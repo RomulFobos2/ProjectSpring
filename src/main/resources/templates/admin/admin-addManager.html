@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавление нового администратора</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+    <style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 430px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 14px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin button[type="submit"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin a{
+
+    font-size: 28px;
+}
+    </style>
+
+</head>
+<!--Ввести подсказку для формата пароля-->
+<!--Требования к паролю: не меньше 8 знаков, содержание заглавных и строчных букв и цифр.-->
+<body class="text-center">
+<main class="form-signin">
+    <div class="container mt-5 mb-5">
+        <form action="/admin/admin-addManager" method="post">
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
+            <h1 class="h3 mb-3 fw-normal">Добавление нового администратора</h1>
+            <p class="fs-6 text-danger" th:text="${managerNameError}"></p>
+            <p class="fs-6 text-danger" th:text="${passwordError}"></p>
+            <input type="text" name="managerName" placeholder="Введите имя учетной записи" class="form-control"
+                  required><br>
+            <select class="form-select" name="inputDepartment" id="inputDepartment" required>
+                <option selected disabled value="">Выберите структурное подразделение</option>
+                <option th:each="el : ${allDepartments}" th:value="${el.id}" th:text="${el.name}"></option>
+            </select><br>
+            <input type="password" name="password" placeholder="Введите пароль"
+                   class="form-control" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"><br>
+            <input type="password" name="passwordConfirm" placeholder="Подтвердите пароль"
+                   class="form-control" required><br>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Добавить</button>
+            <a class="p-2 text-dark" th:href="'/admin/all-managers'">Вернуться</a>
+            <p class="mt-5 mb-3 text-muted">&copy;2020</p>
+        </form>
+    </div>
+</main>
+</body>
+</body>
+</html>
+

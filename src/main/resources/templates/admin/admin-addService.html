@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Администрирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Добавление услуги</h1>
+    <p class="fs-6 text-danger" th:text="${serviceNameError}"></p>
+    <form action="/admin/admin-addService" method="post" class="row g-3">
+        <div class="col-sm-3">
+            <label for="inputService" class="form-label">Название услуги</label>
+            <input type="text" class="form-control" name="inputService" id="inputService" placeholder="Название услуги" required>
+        </div>
+        <div class="col-sm-3">
+            <label for="inputDepartment" class="form-label">Структурное подразделение</label>
+            <select class="form-select" name="inputDepartment" id="inputDepartment" required>
+                <option selected disabled value="">Выберите структурное подразделение</option>
+                <option th:each="el : ${allDepartments}" th:value="${el.id}" th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+        <label for="inputDuration" class="form-label">Длительность оказания услуги</label>
+        <select class="form-select" name="inputDuration" id="inputDuration" required>
+            <option selected disabled value="">Выберите длительность оказания услуги</option>
+            <option value="5">5 минут</option>
+            <option value="10">10 минут</option>
+            <option value="15">15 минут</option>
+        </select>
+        </div>
+        <div class="col-sm-3">
+            <label for="inputOnline" class="form-label">Тип услуги</label>
+            <select class="form-select" name="inputOnline" id="inputOnline" required>
+                <option selected disabled value="">Выберите тип услуги</option>
+                <option value="false">Запись на прием</option>
+                <option value="true">Онлайн</option>
+            </select>
+        </div>
+        <div class="col-sm-12">
+            <label for="inputShortDescription" class="form-label">Краткое описание услуги</label>
+            <textarea class="form-control" name="inputShortDescription" id="inputShortDescription" maxlength="300" wrap="soft" rows="4" required></textarea>
+        </div>
+        <div class="col-sm-12">
+            <label for="inputDescription" class="form-label">Информация об услуги</label>
+            <textarea class="form-control" name="inputDescription" id="inputDescription" maxlength="10000" wrap="soft" rows="10" required></textarea>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a th:href="'/admin/all-services'" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

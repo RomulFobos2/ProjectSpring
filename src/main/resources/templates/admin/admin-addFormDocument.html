@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Администрирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Добавление формы документа</h1>
+    <p class="fs-6 text-danger" th:text="${formDocumentNameError}"></p>
+    <form action="/admin/admin-addFormDocument" method="post" class="row g-3">
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Услуга</label>
+            <select class="form-select" name="inputService" id="inputService" required>
+                <option selected disabled value="">Выберите услугу</option>
+                <option th:each="el : ${allServices}" th:value="${el.id}" th:text="${el.serviceName} + ' / ' + ${el.department.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputDocument" class="form-label">Документ</label>
+            <select class="form-select" name="inputDocument" id="inputDocument" required>
+                <option selected disabled value="">Выберите документ</option>
+                <option th:each="el : ${allDocuments}" th:value="${el.id}" th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputFormDocument" class="form-label">Форма документа</label>
+            <select class="form-select" name="inputFormDocument" id="inputFormDocument" required>
+                <option selected disabled value="">Выберите форму документа</option>
+                <option value="Оригинал">Оригинал</option>
+                <option value="Копия">Копия</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a th:href="'/admin/all-formDocuments'" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

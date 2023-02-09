@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Панель администратора</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${appeal}" >
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${el.service.serviceName} + ' / ' + ${el.service.department.name}"/>
+        <p>Номер обращения № <span th:text="${el.id}"></span></p>
+        <p>Заявитель <span th:text="${el.user.username}"></span></p>
+        <p>Время подачи заявления <span th:text="${#dates.format(el.dateAppeal, 'dd MMMM yyyy HH:mm')}"></span></p>
+        <p th:if="${el.dateAnswer != null}">Время ответа/приёма <span th:text="${#dates.format(el.dateAnswer, 'dd MMMM yyyy HH:mm')}"></span></p>
+        <p th:if="${el.password != null}">Пароль к архиву <span th:text="${el.password}"></span></p>
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a href="javascript:history.go(-1)" class="btn btn-secondary mx-auto">Назад</a>
+        </form>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

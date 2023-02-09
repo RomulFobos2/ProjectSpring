@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Отзыв об услуги</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <style>
+        .blue{
+            background-color: #4682B4
+        }
+    </style>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <form th:action="'/questionnaire-send/' + ${currentAppeal.id}" method="post" class="row g-3" onsubmit="alert('Спасибо за Ваш отзыв!')">
+        <div class="alert alert-info mt-2">
+            <h1 th:text="'Отзыв о заявки ' + ${currentAppeal.service.serviceName} + ' / ' + ${currentAppeal.service.department.name}"/>
+            <h5 class="fst-italic" th:utext="'Уважаемый ' + ${currentAppeal.user.firstName} + ' ' + ${currentAppeal.user.patronymicName} + '! <br> Заполнение анкеты займет у Вас не более 5 минут. <br> Данные опроса помогут повысить качество предоставления услуг.'"></h5>
+        </div>
+        <div class="p-4 p-md-5 mb-4 text-white rounded blue">
+            <h5 class="fst-italic">Вопрос № 1. Ваша оценка оперативности предоставления государственных услуг.</h5>
+            <br>
+            <div class="row text-center align-items-center">
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Крайне не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше не доволен, чем доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше доволен, чем не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Весьма довелен</label>
+                </div>
+                <div class="col-sm-2 text-center ">
+                    <input class="form-check-input" name="q1" type="radio"  value="0" required>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q1" type="radio"  value="1">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q1" type="radio"  value="2">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q1" type="radio"  value="3">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q1" type="radio" value="4">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q1" type="radio" value="5">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5 mb-4 text-white rounded blue align-items-center">
+            <h5 class="fst-italic">Вопрос № 2. Ваша оценка времени ожидания ответа.</h5>
+            <br>
+            <div class="row text-center align-items-center">
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Крайне не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше не доволен, чем доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше доволен, чем не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Весьма довелен</label>
+                </div>
+                <div class="col-sm-2 text-center ">
+                    <input class="form-check-input" name="q2" type="radio"  value="0" required>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q2" type="radio"  value="1">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q2" type="radio"  value="2">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q2" type="radio"  value="3">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q2" type="radio" value="4">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q2" type="radio" value="5">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5 mb-4 text-white rounded blue">
+            <h5 class="fst-italic">Вопрос № 3. Ваша оценка доступности информации о предоставлении государственных услуг.</h5>
+            <br>
+            <div class="row text-center align-items-center">
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Крайне не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше не доволен, чем доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше доволен, чем не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Весьма довелен</label>
+                </div>
+                <div class="col-sm-2 text-center ">
+                    <input class="form-check-input" name="q3" type="radio"  value="0" required>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q3" type="radio"  value="1">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q3" type="radio"  value="2">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q3" type="radio"  value="3">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q3" type="radio" value="4">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q3" type="radio" value="5">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5 mb-4 text-white rounded blue">
+            <h5 class="fst-italic">Вопрос № 4. Ваша оценка компетентности специалиста, предоставлявшего государственную услугу.</h5>
+            <br>
+            <div class="row text-center align-items-center">
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Крайне не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше не доволен, чем доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Больше доволен, чем не доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Доволен</label>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label class="form-check-label">Весьма довелен</label>
+                </div>
+                <div class="col-sm-2 text-center ">
+                    <input class="form-check-input" name="q4" type="radio"  value="0" required>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q4" type="radio"  value="1">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q4" type="radio"  value="2">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q4" type="radio"  value="3">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q4" type="radio" value="4">
+                </div>
+                <div class="col-sm-2 text-center">
+                    <input class="form-check-input" name="q4" type="radio" value="5">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5 mb-4 text-white rounded blue">
+            <h5 class="fst-italic">Вопрос № 5. Ваши предложения по повышению качества государственных услуг.</h5>
+            <br>
+                <textarea class="form-control" name="q5" maxlength="500" wrap="soft" rows="6"></textarea>
+        </div>
+
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a href="javascript:history.go(-1)" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

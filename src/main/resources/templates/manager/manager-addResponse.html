@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Администрирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1 th:text="'Ответ на заявку №' + ${appeal.id}"></h1>
+    <form action="/manager/manager-addResponse" method="post" class="row g-3" enctype="multipart/form-data">
+<!--        Скрытое поле, чтобы в контроллере получить номер заявки-->
+        <div class="col-sm-4" hidden>
+            <label for="appealID" class="form-label">Email структурного подразделения</label>
+            <input type="text" class="form-control" name="appealID" id="appealID" th:value="${appeal.id}">
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label">Название услуги</label>
+            <input type="text" class="form-control" disabled
+                   th:placeholder="${appeal.service.serviceName}">
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label">Структурное подразделение</label>
+            <input type="text" class="form-control" disabled th:placeholder="${appeal.service.department.name}">
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label">ФИО заявителя</label>
+            <input type="text" class="form-control" disabled
+                   th:placeholder="${appeal.user.lastName + ' ' + appeal.user.firstName + ' ' + appeal.user.patronymicName}">
+        </div>
+        <div class="col-sm-10">
+            <label for="inputResponse" class="form-label">Текст ответа</label>
+            <textarea class="form-control" name="inputResponse" id="inputResponse" maxlength="10000" wrap="soft"
+                      rows="6" required></textarea>
+        </div>
+        <div class="col-sm-2">
+            <label for="inputFileOfResponse" class="form-label">Приложение к ответу</label>
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3">
+                    <h6 class="my-0 fw-normal text-center">Архив</h6>
+                </div>
+                <div class="card-body text-center">
+                    <ul class="list-unstyled mt-3 mb-4 text-center">
+                        <input type="file" name="inputFileOfResponse" id="inputFileOfResponse" onchange="mySelectFile()" hidden>
+                        <p id="text"></p>
+                    </ul>
+                    <a class="btn btn btn-primary" onclick="myClick()">Загрузить файл</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a href="javascript:history.go(-1)" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+            function myClick(){
+	            var btn = document.getElementById("inputFileOfResponse");
+	            btn.click();
+	        }
+
+	        function mySelectFile(){
+	            var selectedFile = document.getElementById("inputFileOfResponse").files[0];
+	            var txt = document.getElementById("text");
+	            txt.innerHTML = "" + "Загружен файл:<br>" + selectedFile.name;
+	        }
+</script>
+</body>
+</html>

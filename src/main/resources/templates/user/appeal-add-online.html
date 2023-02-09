@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Подача онлайн услуги</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Подача онлайн услуги</h1>
+    <form action="/appeal-add-online" method="post" class="row g-3" onsubmit="return getRequest()" enctype="multipart/form-data">
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Выбранное структурное подразделение</label>
+            <select class="form-select" name="inputDepartment" id="inputDepartment" required oninput="testFunction()">
+                <option selected disabled value="">Выберите структурное подразделение</option>
+                <option th:each="el : ${allDepartments}" th:value="${el.id}" th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputService" class="form-label">Выбранная услуга</label>
+            <select class="form-select" name="inputService" id="inputService" required disabled
+                    oninput="getFormsDocument()">
+                <option selected disabled value="">Выберите услугу</option>
+                <option></option>
+            </select>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-sm-6 alert alert-primary" role="alert">
+                <a id="infoAboutDepartment">
+                    <h5 class="alert-heading">"Наименование выбранного структурного подразделения"</h5>
+                    <p>Описание структурного подразделения</p>
+                    <hr>
+                </a>
+                <a id="infoAboutService">
+                    <h5 class="alert-heading">"Наименование выбранной услуги"</h5>
+                    <p>Описание выбранной услуги</p>
+                    <hr>
+                </a>
+            </div>
+            <div class="col-sm-6 alert alert-success" role="alert" id="listOfDocuments">
+                <h5 class="alert-heading">Перечень документов необходимых для оказания услуги</h5>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+        </div>
+
+        <div class="row g-3" id="inputFileOfDocuments">
+
+        </div>
+
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a th:href="'/service-main'" class="btn btn-secondary my-2">Назад</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+                function testFunction() {
+             	document.getElementById("inputService").removeAttribute("disabled");;
+             	/*<![CDATA[*/
+             	var departments = [];
+             	var departmentsINFO = []; // в массиве будем хранить shortDescription.
+             	var size = 1 + /*[[${allDepartments.get(allDepartments.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             		departments.push("0");
+             		departmentsINFO.push("0");
+             	}
+             	/*[# th:each="elVar : ${allDepartments}"]*/
+             	var index = /*[[${elVar.id}]]*/ ;
+             	departments[index] = /*[[${elVar.name}]]*/
+             	departmentsINFO[index] = /*[[${elVar.shortDescription}]]*/
+             		/*[/]*/
+             		/*]]>*/
+             	var x = document.getElementById("inputDepartment").value;
+             	var service = [];
+             	/*[# th:each="elServ : ${allServices}"]*/
+             	var index_S = /*[[${elServ.department.id}]]*/
+             		if (x == index_S) {
+             			var var_arr = [];
+             			var_arr.push( /*[[${elServ.serviceName}]]*/ , /*[[${elServ.id}]]*/ );
+             			service.push(var_arr);
+             		}
+             	/*[/]*/
+             	inputService.options.length = 1;
+             	for (var i = 0; i < service.length; i++) {
+             		let newOption = new Option(service[i][0], service[i][1], );
+             		inputService.append(newOption);
+             	}
+
+                var indexDept = document.getElementById("inputDepartment").options.selectedIndex;
+                var infoAboutDepartment = document.getElementById('infoAboutDepartment');
+                infoAboutDepartment.innerHTML = `<h5 class="alert-heading">` + inputDepartment.options[indexDept].text + `</h5><p>` + departmentsINFO[indexDept] + `</p><hr>`
+                //Проверка того, что у inputService выбрана услуга. В зависимости от этого вызываем перерисовку необходимых документов
+                check = document.getElementById("inputService").value;
+             	if(check != 0){
+             	    getFormsDocument();
+             	}
+             	else{
+             	    var infoAboutService = document.getElementById('infoAboutService');
+                    infoAboutService.innerHTML = `<h5 class="alert-heading">"Наименование выбранной услуги"</h5><p>Описание выбранной услуги</p><hr>`
+             	    var listOfDocuments = document.getElementById('listOfDocuments');
+             	    listOfDocuments.innerHTML = `<h5 class="alert-heading">Перечень документов необходимых для оказания услуги</h5>`;
+                    var inputFileOfDocuments = document.getElementById('inputFileOfDocuments');
+                    inputFileOfDocuments.innerHTML = ``;
+             	}
+             }
+
+            //Получаем список документов для услуги и выводим их
+	        function getFormsDocument(){
+	            //Формируем массив с описанием услуг
+                /*<![CDATA[*/
+             	var serviceINFO = []; // в массиве будем хранить shortDescription.
+             	var size = 1 + /*[[${allServices.get(allServices.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             		serviceINFO.push("0");
+             	}
+             	/*[# th:each="elVar : ${allServices}"]*/
+             	var index = /*[[${elVar.id}]]*/ ;
+             	serviceINFO[index] = /*[[${elVar.shortDescription}]]*/
+             		/*[/]*/
+             		/*]]>*/
+	            //получаем id выбранной в select услуги
+	            var x = document.getElementById("inputService").value;
+	            var formDocuments = [];
+             	var size = 1 + /*[[${formDocuments.get(formDocuments.size()-1).getId()}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             	    var var_array = ["0", "0", "0"]
+             		formDocuments.push(var_array);
+             	}
+             	var i = 0;
+             	/*[# th:each="elVar : ${formDocuments}"]*/
+             	    formDocuments[i][0] = /*[[${elVar.name}]]*/;
+             	    formDocuments[i][1] = /*[[${elVar.document.name}]]*/;
+             	    formDocuments[i][2] = /*[[${elVar.service.id}]]*/;
+             	    i++;
+                /*[/]*/
+                var listOfDocuments = document.getElementById('listOfDocuments');
+	            listOfDocuments.innerHTML = `<h5 class="alert-heading">Перечень документов необходимых для оказания услуги</h5>`;
+
+	            //Элементы для выбора документов
+	            var inputFileOfDocuments = document.getElementById('inputFileOfDocuments');
+                inputFileOfDocuments.innerHTML = `<h4>Прикрепите документы</h4>`;
+                for (var i = 0; i < formDocuments.length; i++) {
+                    if(formDocuments[i][2] == x){
+                        var var_html = `<p>` + formDocuments[i][1] + `(` + formDocuments[i][0] + `)</p> <hr>`;
+                        listOfDocuments.innerHTML += var_html;
+                        var varInputHTML =`<div class="col-sm-2">
+                                            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                                            <div class="card-header py-3">
+                                            <h6 class="my-0 fw-normal text-center">` + formDocuments[i][1] + `<br>(` + formDocuments[i][0] + `)</h6>
+                                            </div>
+                                            <div class="card-body">
+                                            <ul class="list-unstyled mt-3 mb-4 text-center">
+                                            <input type="file" name="inputFile" id="inputFile_` + i + `" onchange="mySelectFile(` + i + `)" hidden>
+                                            <p id="textInputFile_` + i + `"></p>
+                                            </ul>
+                                            <a class="w-100 btn btn btn-primary" onclick="myClick(` + i + `)">Загрузить файл</a>
+                                            </button>
+                                            </div>
+                                            </div>
+                                            </div>`;
+                        inputFileOfDocuments.innerHTML += varInputHTML;
+                    }
+                }
+                var indexService = document.getElementById("inputService").options.selectedIndex;
+                var infoAboutService = document.getElementById('infoAboutService');
+                infoAboutService.innerHTML = `<h5 class="alert-heading">` + inputService.options[indexService].text + `</h5><p>`+ serviceINFO[x] +`</p><hr>`
+	        }
+
+	        function myClick(index){
+	            var btn = document.getElementById("inputFile_" + index);
+	            btn.click();
+	        }
+
+	        function mySelectFile(index){
+	            var selectedFile = document.getElementById("inputFile_" + index).files[0];
+	            var txt = document.getElementById("textInputFile_" + index);
+	            txt.innerHTML = "" + "Загружен файл:<br>" + selectedFile.name;
+	        }
+
+            //Отправка запроса
+	        function getRequest(){
+	            var boolean = true;
+	            var objects = document.getElementsByName("inputFile");
+	            for(var i = 0; i < objects.length; i++){
+	                if(objects[i].files[0] == null){
+	                    alert("Загрузите необходимые документы");
+	                    boolean = false;
+	                    break;
+	                }
+	            }
+                return boolean;
+	        }
+
+</script>
+</body>
+</html>
+
+
